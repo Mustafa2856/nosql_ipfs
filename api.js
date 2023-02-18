@@ -1,9 +1,11 @@
 import express from 'express';
+import cors from 'cors';
 import db from './operations/index.js';
 import bodyParser from 'body-parser';
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 // Define middleware function for user validation
 function validateUser(req, res, next) {
