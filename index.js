@@ -1,138 +1,102 @@
-import express from 'express';
-import db from './operations/index.js';
-import bodyParser from 'body-parser';
+import _db from "./operations/index.js";
+import { safeString } from "./services/security.js";
 
-const app = express();
-app.use(bodyParser.json());
+class database {
+    dbName = "";
 
-// Define middleware function for user validation
-function validateUser(req, res, next) {
-    const { username, password } = req.body;
-    if (username === 'admin' && password === 'password') {
-        req.user = { username: 'admin' };
-        next();
-    } else {
-        res.status(401).send('Invalid username or password');
+    constructor(dbName) {
+        dbName = safeString(dbName);
+        this.dbName = dbName;
     }
-}
-
-function validateDataType(dataType) {
-    return function (req, res, next) {
-        if (typeof req.body === dataType) {
-            next();
-        } else {
-            res.status(400).send(`Invalid data type: expected ${dataType}`);
-        }
+    
+    async create() {
+        return await _db.createDatabase(this.dbName);
     }
-}
 
-const getAESKey = async (username, password) => {
-    let encoder = new TextEncoder();
-    let secretKey = await crypto.subtle.importKey(
-        "raw",
-        encoder.encode(username + password),
-        "PBKDF2",
-        false,
-        ["deriveBits", "deriveKey"]
-    );
-    let AESKey = await crypto.subtle.deriveKey({
-        "name": "PBKDF2",
-        salt: Buffer.from(username),
-        "iterations": 100000,
-        "hash": "SHA-256"
-    },
-        secretKey,
-        { "name": "AES-CBC", "length": 256 },
-        true,
-        ["encrypt", "decrypt"]
-    );
-    return AESKey;
-}
-
-const loginUser = async (username, password) => {
-    let AESKey = await getAESKey(username, password);
-    let iv = Buffer.from((username + 'username12345678901234567890').slice(0, 16));
-    let response = await fetch(serverURL + "/login/" + username, {
-        method: "GET",
-        cache: "no-cache"
-    });
-
-    if (response.ok) {
-        let keyPair = await response.json();
-        let decryptedPrivateKey = await crypto.subtle.decrypt(
-            {
-                name: "AES-CBC",
-                iv: iv,
-            },
-            AESKey,
-            Buffer.from(keyPair['private_key'], 'base64')
-        );
-        saveUserKeys(username, keyPair['public_key'], Buffer.from(decryptedPrivateKey).toString('base64'))
-    } else {
-        console.log('Login error');
+    async createCollection(collectionName) {
+        collectionName = safeString(collectionName);
+        await _db.createCollection(collectionName, this.dbName);
+        return new collection(this.dbName, collectionName);
     }
-}
 
-const registerUser = async (username, email, password) => {
-
-    let response = await fetch(serverURL + "/register", {
-        method: 'POST',
-        cache: 'no-cache',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify({
-            'username': username,
-            'status': 'ok'
-        })
-    });
-    if (response.ok) {
-        saveUserKeys(username, publicKeyString, privateKey.toString('base64'));
-        return true;
+    async listCollections() {
+        return await _db.listCollections(this.dbName);
     }
-    return false;
+
+    async getCollection(collectionName) {
+        collectionName = safeString(collectionName);
+        if(collectionName in await this.listCollection()){
+            return new collection(this.dbName);
+        }else return null;
+    }
+
 }
 
+class collection {
+    db = new database("");
+    collName = "";
+    
+    constructor(db,collName) {
+        this.db = db;
+        this.collName = collName;
+    }
 
-app.get('/', async (req, res) => {
-    res.send(await db.listDatabases());
-});
+    /**
+     * Creates a collection with the name given in constructor if the database exists.
+     */
+    async create() {
+        return await _db.createCollection(this.db.dbName, this.collName);
+    }
 
-app.get('/:database', async (req, res) => {
-    res.send(await db.listCollections(req.params.database));
-});
+    /**
+     * 
+     * @param {*} document Object to be stored in the document
+     */
+    async createDocument(document) {
+        return await _db.insertDocument(this.db.dbName, this.collName, document);
+    }
 
-app.get('/:database/:collection', async (req, res) => {
-    res.send(await db.findDocuments(req.params.database,req.params.collection,{}));
-});
+    async findAll() {
+        return await _db.findDocuments(this.db.dbName, this.collName,{});
+    }
 
-app.post('/:database/:collection', async (req, res) => {
-    const filter = req.body;
-    res.send(await db.findDocuments(req.params.database,req.params.collection,filter));
-});
+    async findFiltered(filter) {
+        return await _db.findDocuments(this.db.dbName, this.collName,filter);
+    }
 
-app.put('/create/:database', async (req, res) => {
-    res.send(await db.createDatabase(req.params.database));
-});
+    async findFilteredFirst(filter) {
+        const list = await _db.findDocuments(this.db.dbName, this.collName,filter);
+        if(list.length > 0)return list[0];
+        else return null;
+    }
 
-app.put('/create/:database/:collection', async (req, res) => {
-    res.send(await db.createCollection(req.params.collection, req.params.database));
-});
+    /**
+     * 
+     * @param {*} filter filter object, set as {} for updateAll
+     */
+    async updateDocuments(filter = {}) {
+        return await  _db.updateDocuments(this.db.dbName, this.collName, filter);
+    }
 
-app.post('/create/:database/:collection', async (req, res) => {
-    res.send(await db.insertDocument(req.params.database, req.params.collection, req.body));
-});
+    /**
+     * WARNING: Leaving filter empty will result in deleting All documents in the collection.
+     * @param {*} filter filter object
+     */
+    async deleteDocuments(filter = {}) {
+        return await _db.deleteDocuments(this.db.dbName, this.collName, filter);
+    }
 
-app.post('/delete/:database/:collection', async (req, res) => {
-    res.send(await db.deleteDocuments(req.params.database, req.params.collection, req.body));
-});
+}
 
-app.post('/update/:database/:collection', async (req, res) => {
-    res.send(await db.deleteDocuments(req.params.database, req.params.collection, req.body.filter, req.body.update));
-});
+export const createDB = async (dbName) => {
+    const db = new database(dbName);
+    await db.create();
+    return db;
+}
 
-app.listen(3000, () => {
-    console.log('Server running on port 3000');
-});
+export const connect = async (dbName) => {
+    const db = new database(dbName);
+    return db;
+}
+
+//export default {createDB};
