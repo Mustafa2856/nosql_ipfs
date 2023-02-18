@@ -1,0 +1,19 @@
+{
+  "name": "nosql-ipfs",
+  "version": "1.0.0",
+  "description": "Use a decentralized database with your data being encrypted and stored over a decentralized web on IPFS.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mustafa2856/nosql-ipfs.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Mustafa2856/nosql-ipfs/issues"
+  },
+  "homepage": "https://github.com/Mustafa2856/nosql-ipfs#readme"
+}
