@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/Mustafa2856/nosql-ipfs/issues"
   },
-  "homepage": "https://github.com/Mustafa2856/nosql-ipfs#readme"
+  "homepage": "https://github.com/Mustafa2856/nosql-ipfs#readme",
+  "dependencies": {
+    "eccrypto": "^1.1.6",
+    "ipfs": "^0.66.0",
+    "ipfs-core": "^0.18.0",
+    "ipfs-http-client": "^60.0.0"
+  },
+  "type": "module"
 }
