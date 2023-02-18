@@ -16,7 +16,7 @@ class database {
     async createCollection(collectionName) {
         collectionName = safeString(collectionName);
         await _db.createCollection(collectionName, this.dbName);
-        return new collection(this.dbName, collectionName);
+        return new collection(this, collectionName);
     }
 
     async listCollections() {
@@ -25,8 +25,8 @@ class database {
 
     async getCollection(collectionName) {
         collectionName = safeString(collectionName);
-        if(collectionName in await this.listCollection()){
-            return new collection(this.dbName);
+        if((await this.listCollections()).includes(collectionName)){
+            return new collection(this, collectionName);
         }else return null;
     }
 
@@ -53,6 +53,7 @@ class collection {
      * @param {*} document Object to be stored in the document
      */
     async createDocument(document) {
+        console.log(this.db)
         return await _db.insertDocument(this.db.dbName, this.collName, document);
     }
 
