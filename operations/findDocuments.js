@@ -1,32 +1,32 @@
 import fileStore from "../services/filestore.js";
 import { safeString } from "../services/security.js";
 
-export const findDocuments = (database, collection, object) => {
+export const findDocuments = async (database, collection, object) => {
     database = safeString(database);
     collection = safeString(collection);
-    const objects = getAllObjects(database, collection);
+    const objects = await getAllObjects(database, collection);
     let filteredObjects = objects;
     const keys = Object.keys(object);
     for(const key of keys) {
-        filteredObjects.filter((subdoc)=>{
-            if(checkFilterWithObject(subdoc, object, key))
-            return subdoc;
+        filteredObjects = filteredObjects.filter((subdoc)=>{
+            return checkFilterWithObject(subdoc, object, key);
         });
     }
+    return filteredObjects;
 };
 
-const getAllObjects = (database, collection) => {
-    const files = fileStore.listFiles(path);
-    const objects = [];
+const getAllObjects = async (database, collection) => {
+    const files = await fileStore.listFiles("/" + database + "/" + collection);
+    let objects = [];
     for (const file of files) {
-        objects.push(JSON.parse(file));
+        const object = JSON.parse((await fileStore.readFile("/" + database + "/" + collection+"/"+file.name)).toString());
+        objects.push(object);
     }
     return objects;
 };
 
 const checkFilterWithObject = (object, filter, key) => {
-    const keys = 'dd.sdfsd';
-    const keyPath = keys.split('.');
+    const keyPath = key.split('.');
     let toCheckObject = object;
     for(const keyPart of keyPath){
         if(toCheckObject[keyPart]==undefined)return false;
@@ -40,4 +40,6 @@ const checkFilterWithObject = (object, filter, key) => {
     if(toCheckObject == filter[key]){
         return true;
     }
+
+    return false;
 }

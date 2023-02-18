@@ -6,7 +6,7 @@ const ipfs = create('http://localhost:5001/api/v0');
 
 //const key = Buffer.from({0}); // TODO get user aes key
 
-const addFile  = async (path, content) => {
+const addFile = async (path, content) => {
     // key = Buffer.from(key);
     // const encryptedContent = await crypto.subtle.encrypt(
     //     {
@@ -16,9 +16,8 @@ const addFile  = async (path, content) => {
     //     key,
     //     content
     // );
-    // await ipfs.files.write(path, encryptedContent);
-    //await ipfs.files.touch('/test/a.txt');
-    await ipfs.files.write(path, content, {create: true});
+    console.log(path);
+    await ipfs.files.write(path, content, { create: true });
 }
 
 
@@ -32,7 +31,7 @@ const deleteFile = async (path) => {
 }
 
 const createDir = async (path) => {
-    await ipfs.files.mkdir(path, {parents: true});
+    await ipfs.files.mkdir(path, { parents: true });
 }
 
 const listFiles = async (path) => {
@@ -43,6 +42,17 @@ const listFiles = async (path) => {
     return files;
 }
 
-const fileStore = {addFile, updateFile, deleteFile, createDir, listFiles};
+const readFile = async (path) => {
+    let chunks = []
+
+    for await (const chunk of ipfs.files.read(path)) {
+        chunks.push(...chunk);
+    }
+
+    const data = Buffer.from(chunks);
+    return data;
+}
+
+const fileStore = { addFile, updateFile, deleteFile, createDir, listFiles, readFile };
 
 export default fileStore;
