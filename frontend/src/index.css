@@ -14,7 +14,7 @@ code {
   box-sizing: border-box;
 }
 body {
-  background: #1c8ef9 !important;
+  background: #cdddec !important;
   min-height: 100vh;
   display: flex;
   font-weight: 400;
@@ -81,4 +81,36 @@ html,
 }
 .forgot-password a {
   color: #167bff;
+}
+
+.list-group {
+  margin-top: 5vh;
+}
+
+.list-group-item {
+  align-items: center;
+  margin-left: 10vw;
+  margin-right: 10vw;
+}
+
+.head2 {
+  margin-top: 5vh;
+  align-items: center;
+  margin-left: 10vw;
+}
+
+.head3 {
+  float: right;
+  margin-right: 10vw;
+  /* margin-top: 3vh; */
+  /* alig */
+  /* align-items: right; */
+  /* margin-left: 10vw; */
+}
+
+.head4 {
+  margin-top: 5vh;
+  margin-left: 10vw;
+  margin-right: 10vw;
+  max-width: 80vw;
 }
