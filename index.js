@@ -103,18 +103,6 @@ app.post('/switchdatabse', validateUser,validateDataType('String'),(req, res) =>
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 app.post('/CreateCollection',validateUser,validateDataType('Object'), (req, res) => {
 
 });
