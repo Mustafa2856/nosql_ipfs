@@ -4,6 +4,7 @@
   "description": "Use a decentralized database with your data being encrypted and stored over a decentralized web on IPFS.",
   "main": "index.js",
   "scripts": {
+    "serve": "node index.js",
     "test": "node index-test.js"
   },
   "repository": {
@@ -17,7 +18,9 @@
   },
   "homepage": "https://github.com/Mustafa2856/nosql-ipfs#readme",
   "dependencies": {
+    "body-parser": "^1.20.1",
     "eccrypto": "^1.1.6",
+    "express": "^4.18.2",
     "ipfs": "^0.66.0",
     "ipfs-core": "^0.18.0",
     "ipfs-http-client": "^60.0.0"

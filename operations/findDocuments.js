@@ -1,7 +1,7 @@
 import fileStore from "../services/filestore.js";
 import { safeString } from "../services/security.js";
 
-export const findDocuments = async (database, collection, object) => {
+export const findDocuments = async (database, collection, object = {}) => {
     database = safeString(database);
     collection = safeString(collection);
     const objects = await getAllObjects(database, collection);

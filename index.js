@@ -1,11 +1,9 @@
-const express = require('express');
+import express from 'express';
+import db from './operations/index.js';
+import bodyParser from 'body-parser';
+
 const app = express();
-
-app.get('/', (req, res) => {
-
-    res.send('Hello world!!!');
-
-});
+app.use(bodyParser.json());
 
 // Define middleware function for user validation
 function validateUser(req, res, next) {
@@ -98,31 +96,42 @@ const registerUser = async (username, email, password) => {
 }
 
 
-app.post('/switchdatabse', validateUser,validateDataType('String'),(req, res) => {
-    const id = req.body.id;
+app.get('/', async (req, res) => {
+    res.send(await db.listDatabases());
 });
 
-
-app.post('/CreateCollection',validateUser,validateDataType('Object'), (req, res) => {
-
+app.get('/:database', async (req, res) => {
+    res.send(await db.listCollections(req.params.database));
 });
 
-app.post('/InsertDocument', validateUser,validateDataType('Object'), (req, res) => {
-
+app.get('/:database/:collection', async (req, res) => {
+    res.send(await db.findDocuments(req.params.database,req.params.collection,{}));
 });
 
-app.post('/FilterDocument', validateUser,validateDataType('Object'), (req, res) => {
-
+app.post('/:database/:collection', async (req, res) => {
+    const filter = req.body;
+    res.send(await db.findDocuments(req.params.database,req.params.collection,filter));
 });
 
-app.post('/UpdateDocument', validateUser,validateDataType('Object'),(req, res) => {
-
-});
-app.post('/DeleteDocument', validateUser, validateDataType('Object'), (req, res) => {
-
+app.put('/create/:database', async (req, res) => {
+    res.send(await db.createDatabase(req.params.database));
 });
 
+app.put('/create/:database/:collection', async (req, res) => {
+    res.send(await db.createCollection(req.params.collection, req.params.database));
+});
 
+app.post('/create/:database/:collection', async (req, res) => {
+    res.send(await db.insertDocument(req.params.database, req.params.collection, req.body));
+});
+
+app.post('/delete/:database/:collection', async (req, res) => {
+    res.send(await db.deleteDocuments(req.params.database, req.params.collection, req.body));
+});
+
+app.post('/update/:database/:collection', async (req, res) => {
+    res.send(await db.deleteDocuments(req.params.database, req.params.collection, req.body.filter, req.body.update));
+});
 
 app.listen(3000, () => {
     console.log('Server running on port 3000');

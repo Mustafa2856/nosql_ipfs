@@ -7,7 +7,7 @@ export const deleteDocuments = async (database, collection, filter) => {
     database = safeString(database);
     collection = safeString(collection);
     const toDelete = await findDocuments(database, collection, filter);
-    for(const object of toDelete) {
+    for (const object of toDelete) {
         const filePathtoHash = collection + JSON.stringify(object);
         const filePathBuffer = await crypto.subtle.digest("SHA-256", Buffer.from(filePathtoHash));
         const filePath = Buffer.from(filePathBuffer).toString('base64url');
