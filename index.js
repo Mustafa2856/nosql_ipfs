@@ -76,7 +76,7 @@ const loginUser = async (username, password) => {
 }
 
 const registerUser = async (username, email, password) => {
-    
+
     let response = await fetch(serverURL + "/register", {
         method: 'POST',
         cache: 'no-cache',
@@ -102,24 +102,38 @@ app.post('/switchdatabse', validateUser,validateDataType('String'),(req, res) =>
     const id = req.body.id;
 });
 
-app.post('/insert',validateUser,validateDataType('Object'), (req, res) => {
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.post('/CreateCollection',validateUser,validateDataType('Object'), (req, res) => {
 
 });
 
-app.post('/findall', validateUser,validateDataType('Object'), (req, res) => {
+app.post('/InsertDocument', validateUser,validateDataType('Object'), (req, res) => {
 
 });
 
-app.post('/filterdata', validateUser,validateDataType('Object'), (req, res) => {
+app.post('/FilterDocument', validateUser,validateDataType('Object'), (req, res) => {
 
 });
 
-app.post('/projectfields', validateUser,validateDataType('Object'),(req, res) => {
+app.post('/UpdateDocument', validateUser,validateDataType('Object'),(req, res) => {
 
 });
-app.post('/aggregate', validateUser, validateDataType('Object'), (req, res) => {
+app.post('/DeleteDocument', validateUser, validateDataType('Object'), (req, res) => {
 
 });
+
 
 
 app.listen(3000, () => {
