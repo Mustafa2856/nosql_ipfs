@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { DocumentList } from "./DocumentList";
 import "bootstrap/dist/css/bootstrap.css";
+import { useNavigate, useParams } from "react-router-dom";
 
 export function CollectionList(props) {
   const [error, setError] = useState(null);
@@ -9,6 +10,8 @@ export function CollectionList(props) {
   const [items, setItems] = useState([]);
   const [isFindAllOpen, setIsFindAllOpen] = useState(false);
   const [collection, setCollection] = useState("");
+  const {db} = useParams();
+  const navigate = useNavigate();
 
   function findAll(event) {
     setIsFindAllOpen(true);
@@ -19,7 +22,7 @@ export function CollectionList(props) {
   // this useEffect will run once
   // similar to componentDidMount()
   useEffect(() => {
-    fetch("http://localhost:3000/" + props.db)
+    fetch("http://localhost:3000/" + db)
       .then((res) => res.json())
       .then(
         (result) => {
@@ -36,37 +39,7 @@ export function CollectionList(props) {
     );
     // setItems(["sample321", "sample2132", "sample3123"]);
   }, []);
-  if (isFindAllOpen) {
-    return (
-      // <div>
-      //   <ul>
-      //     {items.map((item) => (
-      //       <li onClick={findAll}>{item}</li>
-      //     ))}
-      //   </ul>
-      // </div>
-      <div>
-
-      <h2 class="head2">List of Collections : </h2>
-          <div class="input-group mb-3 head4">
-            <input type="text" class="form-control" placeholder="Collection's Name" aria-label="Collection's Name" aria-describedby="basic-addon2" />
-            <div class="input-group-append">
-            <button class="btn btn-outline-primary" type="button">+ Add</button>
-            </div>
-          </div>
-
-      <ul class="list-group">
-        {items.map((item) => (
-          <li class="list-group-item" onClick={findAll}>
-            {item}
-          </li>
-        ))}
-      </ul>
-      <DocumentList path={props.db + "/" + collection}></DocumentList>
-    </div>
-
-    );
-  } else if (error) {
+  if (error) {
     return <div>Error: {error.message}</div>;
   } else {
     return (
@@ -82,7 +55,7 @@ export function CollectionList(props) {
 
       <ul class="list-group">
         {items.map((item) => (
-          <li class="list-group-item" onClick={findAll}>
+          <li class="list-group-item" onClick={(event) => {findAll(event);navigate('/'+db+'/'+item)}}>
             {item}
           </li>
         ))}

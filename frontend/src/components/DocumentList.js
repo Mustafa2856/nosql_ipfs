@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 export function DocumentList(props) {
   const [error, setError] = useState(null);
@@ -13,11 +14,14 @@ export function DocumentList(props) {
     setDatabase(event.target.innerHTML);
   }
 
+  const {db, coll} = useParams();
+  const path = db + "/" + coll;
+
   // Note: the empty deps array [] means
   // this useEffect will run once
   // similar to componentDidMount()
   useEffect(() => {
-    fetch("http://localhost:3000/" + props.path)
+    fetch("http://localhost:3000/" + path)
       .then((res) => res.json())
       .then(
         (result) => {

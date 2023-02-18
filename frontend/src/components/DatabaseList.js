@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { CollectionList } from "./CollectionList";
 import "bootstrap/dist/css/bootstrap.css";
+import { useNavigate } from 'react-router-dom';
 
 export function DatabaseList() {
   const [error, setError] = useState(null);
@@ -9,6 +10,7 @@ export function DatabaseList() {
   const [isCollectionOpen, setIsCollectionOpen] = useState(false);
   const [database, setDatabase] = useState("");
   const [items, setItems] = useState([]);
+  const navigate = useNavigate();
 
   function openCollectionList(event) {
     setIsCollectionOpen(true);
@@ -34,7 +36,7 @@ export function DatabaseList() {
           setError(error);
         }
       )
-    // setItems(["sample", "sample2", "sample3"]);
+    //setItems(["sample", "sample2", "sample3"]);
   }, []);
   if (isCollectionOpen) {
     return <CollectionList db={database}></CollectionList>;
@@ -54,7 +56,7 @@ export function DatabaseList() {
 
         <ul class="list-group">
           {items.map((item) => (
-            <li class="list-group-item" onClick={openCollectionList}>
+            <li class="list-group-item" onClick={(event) => {openCollectionList(event);navigate('/' + item)}}>
               {item}
             </li>
           ))}
