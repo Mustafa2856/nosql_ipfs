@@ -54,7 +54,7 @@ const updateFile = async (path, content) => {
 
 const deleteFile = async (path) => {
     try {
-        await ipfs.files.rm(path);
+        await ipfs.files.rm(path,{recursive: true});
     } catch (e) { console.log('error delete: ', path); }
 }
 

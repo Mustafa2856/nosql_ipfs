@@ -118,3 +118,12 @@ html,
   margin-right: 10vw;
   max-width: 80vw;
 }
+
+.right {
+  float: right;
+}
+
+.margin-btn {
+  margin-left: 0.5vw;
+  margin-right: 0.5vw;
+}

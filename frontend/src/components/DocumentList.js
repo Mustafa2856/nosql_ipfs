@@ -14,8 +14,52 @@ export function DocumentList(props) {
     setDatabase(event.target.innerHTML);
   }
 
-  const {db, coll} = useParams();
+  const { db, coll } = useParams();
   const path = db + "/" + coll;
+
+  function addNewDoc(event) {
+    fetch("http://localhost:3000/create/" + path, {
+      method: "POST", headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      }, body: document.getElementById('insertDoc').value
+    });
+    setItems(items.concat([JSON.parse(document.getElementById("insertDoc").value)]));
+  }
+
+  function deleteDocument(object) {
+    fetch("http://localhost:3000/delete-one/" + path, {
+      method: "POST", headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      }, body: JSON.stringify(object)
+    });
+    setItems(items.filter((val) => {return val!=object}))
+  }
+
+  function updateDoc(object) {
+    fetch("http://localhost:3000/update-one/" + path, {
+      method: "POST", headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      }, body: JSON.stringify({filter:object,update:JSON.parse(document.getElementById("insertDoc").value)})
+    });
+    fetch("http://localhost:3000/" + path)
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          setIsLoaded(true);
+          setItems(result);
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
+        }
+      );
+  }
 
   // Note: the empty deps array [] means
   // this useEffect will run once
@@ -50,20 +94,26 @@ export function DocumentList(props) {
       //   ))}
       // </ul>
       <div>
-        <h2 class="head2">List of Documents : </h2>
-        <div class="input-group mb-3 head4">
-          <input type="text" class="form-control" placeholder="JSON Object" aria-label="JSON Object" aria-describedby="basic-addon2" />
-          <div class="input-group-append">
-            <button class="btn btn-outline-primary" type="button">
+        <h2 className="head2">List of Documents : </h2>
+        <div className="input-group mb-3 head4">
+          <input type="text" className="form-control" placeholder="JSON Object" aria-label="JSON Object" aria-describedby="basic-addon2" id="insertDoc" />
+          <div className="input-group-append">
+            <button className="btn btn-outline-primary" type="button" onClick={addNewDoc}>
               + Add
             </button>
           </div>
         </div>
 
-        <ul class="list-group">
+        <ul className="list-group">
           {items.map((item) => (
-            <li class="list-group-item" onClick={expandDocument}>
-              {JSON.stringify(item)}
+            <li className="list-group-item">
+              <div>
+                <span onClick={expandDocument}>{JSON.stringify(item)}</span>
+                <span className="right">
+                  <button className="btn btn-outline-warning margin-btn" onClick={()=>updateDoc(item)}>update</button>
+                  <button className="btn btn-outline-danger margin-btn" onClick={()=>{deleteDocument(item)}}>delete</button>
+                </span>
+              </div>
             </li>
           ))}
         </ul>

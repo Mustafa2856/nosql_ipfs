@@ -1,8 +1,8 @@
-import { connect } from "./index.js";
+import { createDB } from "./index.js";
 
-const db = await connect('testDB');
+const db = await createDB('testDB2');
 console.log(db);
-const coll = await db.getCollection('testCollection');
+const coll = await db.createCollection('testCollection');
 console.log(coll);
 //const coll = await db.getCollection('testCollection');
 

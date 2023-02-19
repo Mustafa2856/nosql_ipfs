@@ -18,6 +18,11 @@ export function CollectionList(props) {
     setCollection(event.target.innerHTML);
   }
 
+  function addNewCollection(event) {
+    fetch("http://localhost:3000/create/" + db  + "/" +  document.getElementById("collinput").value,{method:"PUT"});
+    setItems(items.concat([document.getElementById("collinput").value]));
+  }
+
   // Note: the empty deps array [] means
   // this useEffect will run once
   // similar to componentDidMount()
@@ -47,9 +52,9 @@ export function CollectionList(props) {
 
       <h2 class="head2">List of Collections : </h2>
           <div class="input-group mb-3 head4">
-            <input type="text" class="form-control" placeholder="Collection's Name" aria-label="Collection's Name" aria-describedby="basic-addon2" />
+            <input type="text" class="form-control" placeholder="Collection's Name" aria-label="Collection's Name" aria-describedby="basic-addon2" id="collinput"/>
             <div class="input-group-append">
-            <button class="btn btn-outline-primary" type="button">+ Add</button>
+            <button class="btn btn-outline-primary" type="button" onClick={addNewCollection}>+ Add</button>
             </div>
           </div>
 

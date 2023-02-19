@@ -33,15 +33,24 @@ app.put('/create/:database/:collection', async (req, res) => {
 });
 
 app.post('/create/:database/:collection', async (req, res) => {
-    res.send(await db.insertDocument(req.params.database, req.params.collection, req.body));
+    const object = req.body;
+    res.send(await db.insertDocument(req.params.database, req.params.collection, object));
 });
 
 app.post('/delete/:database/:collection', async (req, res) => {
     res.send(await db.deleteDocuments(req.params.database, req.params.collection, req.body));
 });
 
+app.post('/delete-one/:database/:collection', async (req, res) => {
+    res.send(await db.deleteDocuments(req.params.database, req.params.collection, req.body));
+});
+
 app.post('/update/:database/:collection', async (req, res) => {
-    res.send(await db.deleteDocuments(req.params.database, req.params.collection, req.body.filter, req.body.update));
+    res.send(await db.updateDocuments(req.params.database, req.params.collection, req.body.filter, req.body.update));
+});
+
+app.post('/update-one/:database/:collection', async (req, res) => {
+    res.send(await db.updateDocument(req.params.database, req.params.collection, req.body.filter, req.body.update));
 });
 
 app.listen(3000, () => {
