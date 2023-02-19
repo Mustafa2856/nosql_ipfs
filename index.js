@@ -87,6 +87,13 @@ class collection {
         return await _db.deleteDocuments(this.db.dbName, this.collName, filter);
     }
 
+    /**
+     * WARNING: Leaving filter empty will result in deleting random documents in the collection.
+     * @param {*} filter filter object
+     */
+    async deleteOneDocument(filter = {}) {
+        return await _db.deleteDocument(this.db.dbName, this.collName, filter);
+    }
 }
 
 export const createDB = async (dbName) => {

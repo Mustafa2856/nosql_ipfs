@@ -1,7 +1,35 @@
+<p align="center">
+  <img src="Logo.png" width="124" />
+</p>
+
 # NoSQL-IPFS
+Database driver for NoSQL over IPFS.
+
+Providing a MongoDB like NoSQL experience over a decentralized architecture (IPFS).
+
+
+## Driver - Usage
+
+```bash
+npm i nosql-ipfs
+```
 
 ## Steps to Run the Application
-// To be added
+To run the complete application including Web UI, HTTP Microservice wrapping the database
+* clone the repo: https://github.com/Mustafa2856/nosql_ipfs
+* in 2 different terminals run the following commands
+```bash
+npm i
+npm run serve
+```
+
+```bash
+cd frontend
+npm i
+npm start
+```
+
+Your HTTP Microservice would be running at http://localhost:3000 & your Web Client would be running at http://localhost:3001
 
 ## Inspiration
 Most Databases Storage services are Centralized, So Single Point of Failure {Slow Speed, Bottleneck Point Leading to Less Efficiency & No-Fault Tolerance} is Possible. Also, from Security Point of View, Data Breaches would lead to Huge Financial Losses.
@@ -14,17 +42,9 @@ This website has exceptional efficiency and outperforms conventional solutions b
 
 Use a decentralized database with your data being encrypted and stored over a decentralized web on IPFS.
 
-## How was it Built ?
-// To be added
-
-## Challenges ?
-// To be added
-
-## Accomplishments 
-// To be added
-
-## What we Learned ?
-// To be added
+## Similar Tools
+* OrbitDB: A decentralized Redis like database based on IPFS
 
 ## Future Work for NoSQL-IPFS
-// To be added
+* Roles & Access Control
+* Sharding
